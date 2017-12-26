@@ -6,6 +6,8 @@ containing the data needed for auto-completion.
 
 This relevant data is:
 - City name
+- Alternate names
+- State/province
 - Country
 - Latitude
 - Longitude
@@ -18,6 +20,19 @@ import json
 
 INPUT_FILE = 'cities_canada-usa.tsv'
 OUTPUT_FILE = 'cities_canada-usa.json'
+
+def sanitize_alternate_names(alternate_names):
+    '''
+    Returns a list of alternate city names according to the
+    given CSV string.
+
+    It appears that tokens starting with a space is an alternate
+    name for the city's state/province. I am not sure why those
+    were included in the first place but I am gladly omiting them!
+    '''
+
+    tokens = alternate_names.split(',')
+    return list(filter(lambda x: x and not x.startswith(' '), tokens))
 
 def resolve_state(token, country):
     '''
@@ -68,6 +83,7 @@ def main():
             tokens = line.split('\t')
 
             name = tokens[1].lower()
+            alternate_names = tokens[3].lower()
             country = tokens[8].lower()
             state = resolve_state(tokens[10], country)
             latitude = float(tokens[4])
@@ -75,6 +91,7 @@ def main():
 
             city = {
                 'name': name,
+                'alternate_names': sanitize_alternate_names(alternate_names),
                 'state': state,
                 'country': country,
                 'latitude': latitude,
