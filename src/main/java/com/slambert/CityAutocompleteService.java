@@ -12,8 +12,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 // TODO: 27/12/2017
-// - City data class
-// - Move data into resource folder
 // - Mock Suggestions class
 // - AutocompleteTrie impl
 // - AutocompleteTrie tests

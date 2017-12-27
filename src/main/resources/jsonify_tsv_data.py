@@ -21,6 +21,7 @@ import json
 INPUT_FILE = 'cities_canada-usa.tsv'
 OUTPUT_FILE = 'cities_canada-usa.json'
 
+
 def sanitize_alternate_names(alternate_names):
     '''
     Returns a list of alternate city names according to the
@@ -33,6 +34,7 @@ def sanitize_alternate_names(alternate_names):
 
     tokens = alternate_names.split(',')
     return list(filter(lambda x: x and not x.startswith(' '), tokens))
+
 
 def resolve_state(token, country):
     '''
@@ -73,11 +75,12 @@ def resolve_state(token, country):
     else:
         raise ValueError('Unknown state/province value')
 
+
 def main():
     cities_list = []
 
     with open(INPUT_FILE) as input_file:
-        next(input_file) # skipping header
+        next(input_file)  # skipping header
 
         for line in input_file:
             tokens = line.split('\t')
@@ -102,6 +105,7 @@ def main():
 
     with open(OUTPUT_FILE, 'w') as output_file:
         json.dump(cities_list, output_file, ensure_ascii=False)
+
 
 if __name__ == '__main__':
     main()
