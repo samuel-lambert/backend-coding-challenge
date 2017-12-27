@@ -11,9 +11,18 @@ package com.slambert;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+// TODO: 27/12/2017
+// - City data class
+// - Move data into resource folder
+// - Mock Suggestions class
+// - AutocompleteTrie impl
+// - AutocompleteTrie tests
+
 @SpringBootApplication
 public class CityAutocompleteService {
+
     public static void main(final String[] args) {
         SpringApplication.run(CityAutocompleteService.class, args);
     }
+
 }
