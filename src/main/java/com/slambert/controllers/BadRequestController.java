@@ -8,11 +8,15 @@
 
 package com.slambert.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.HashMap;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -20,14 +24,13 @@ public class BadRequestController implements ErrorController {
 
     private static final String ERROR_PATH = "/error";
 
-    @RequestMapping(ERROR_PATH)
-    public Map<String, String> returnError() {
-        // FIXME: revisit this with reasonable error handling
-        final Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("code", "400");
-        errorResponse.put("message", "bad request");
+    @Autowired
+    private ErrorAttributes errorAttributes;
 
-        return errorResponse;
+    @RequestMapping(value = ERROR_PATH)
+    public Map<String, Object> returnError(final HttpServletRequest request) {
+        final RequestAttributes requestAttributes = new ServletRequestAttributes(request);
+        return errorAttributes.getErrorAttributes(requestAttributes, false);
     }
 
     @Override
