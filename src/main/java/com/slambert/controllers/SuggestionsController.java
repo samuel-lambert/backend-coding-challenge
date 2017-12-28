@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/suggestions")
 public class SuggestionsController {
 
-    @RequestMapping(method = RequestMethod.GET)
+    private static final String SUGGESTIONS_PATH = "/suggestions";
+
+    @RequestMapping(value = SUGGESTIONS_PATH, method = RequestMethod.GET)
     public String getSuggestions(@RequestParam final String q,
                                  @RequestParam final Optional<Double> latitude,
                                  @RequestParam final Optional<Double> longitude) {
         // Example query: GET /suggestions?q=Londo&latitude=43.70011&longitude=-79.4163
 
         // TODO:
-        // - deal with bad requests (mapping for /error?)
         // - instantiate dummy suggestions object
         // - make sure empty results map to documentation
 
