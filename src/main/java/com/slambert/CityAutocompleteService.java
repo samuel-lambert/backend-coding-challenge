@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 // TODO: 27/12/2017
 // - AutocompleteTrie impl
-// - AutocompleteTrie tests
 
 @SpringBootApplication
 public class CityAutocompleteService {
