@@ -11,9 +11,6 @@ package com.slambert;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-// TODO: 27/12/2017
-// - AutocompleteTrie impl
-
 @SpringBootApplication
 public class CityAutocompleteService {
 

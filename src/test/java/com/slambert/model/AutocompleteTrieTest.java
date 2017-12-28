@@ -13,9 +13,9 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class AutocompleteTrieTest {
 
@@ -53,7 +53,7 @@ public class AutocompleteTrieTest {
 
         final List<Integer> result1 = trie.get("by");
         assertEquals(result1.size(), 1);
-        assertThat(result1, hasItems(1));
+        assertThat(result1, hasItems(4));
 
         final List<Integer> result2 = trie.get("the");
         assertEquals(result2.size(), 1);
@@ -66,10 +66,6 @@ public class AutocompleteTrieTest {
         final List<Integer> result4 = trie.get("s");
         assertEquals(result4.size(), 5);
         assertThat(result4, hasItems(0, 1, 3, 6, 7));
-
-        final List<Integer> result5 = trie.get("");
-        assertEquals(result5.size(), 7);
-        assertThat(result5, hasItems(0, 1, 3, 4, 5, 6, 7));
     }
 
 }
