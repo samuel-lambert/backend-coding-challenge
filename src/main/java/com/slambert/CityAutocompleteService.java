@@ -12,7 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 // TODO: 27/12/2017
-// - Mock Suggestions class
+// - Mock Suggestions class (make it iterable)
 // - AutocompleteTrie impl
 // - AutocompleteTrie tests
 
