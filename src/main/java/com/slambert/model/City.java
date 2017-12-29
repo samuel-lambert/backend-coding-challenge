@@ -33,6 +33,10 @@ public class City {
     @JsonProperty("alternate_names")
     private List<String> alternateNames;
 
+    public City() {
+        // Empty constructor needed by Spring...
+    }
+
     public City(final String name,
                 final String state,
                 final String country,

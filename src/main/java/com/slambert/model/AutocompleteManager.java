@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Component
 public class AutocompleteManager {
@@ -50,7 +51,7 @@ public class AutocompleteManager {
         }
     }
 
-    public Map<String, Set<City>> query(final String q, final Double latitude, final Double longitude) {
+    public Map<String, Set<CityResponse>> query(final String q, final Double latitude, final Double longitude) {
         // This funky return type is used to map JSON responses to the following format:
         //
         // {
@@ -70,19 +71,21 @@ public class AutocompleteManager {
         //  ]
         //}
 
-        final Map<String, Set<City>> result = new HashMap<>();
+        final Map<String, Set<CityResponse>> suggestions = new HashMap<>();
         final Set<City> suggestedCities = trie.get(q);
+        final Set<CityResponse> cityResponses = new TreeSet<>();
+
+        // TODO: suggestedCities -> CityResponse
 
         // TODO 29/12/2017:
-        // - fill the list with suggestions and scores with good format
         // - fix nasty bug
         // - mock impl of autocompletemanager (distance score)
         // - document/improve autocompletemanager
         // - autocomplete manager unit tests
 
-        result.put("suggestions", suggestedCities);
+        suggestions.put("suggestions", cityResponses);
 
-        return result;
+        return suggestions;
     }
 
 }
