@@ -8,69 +8,76 @@
 
 package com.slambert.model;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
 
 public class City {
 
-    private final String name;
-    private final String region;
-    private final String country;
-    private final Double latitude;
-    private final Double longitude;
+    @JsonProperty("name")
+    private String name;
 
-    public City(final String name,
-                final String region,
-                final String country,
-                final Double latitude,
-                final Double longitude) {
-        this.name = name;
-        this.region = region;
-        this.country = country;
-        this.latitude = latitude;
-        this.longitude = longitude;
+    @JsonProperty("state")
+    private String state;
+
+    @JsonProperty("country")
+    private String country;
+
+    @JsonProperty("latitude")
+    private Double latitude;
+
+    @JsonProperty("longitude")
+    private Double longitude;
+
+    @JsonProperty("alternate_names")
+    private List<String> alternateNames;
+
+    public List<String> getAlternateNames() {
+        return alternateNames;
+    }
+
+    public void setAlternateNames(final List<String> alternateNames) {
+        this.alternateNames = alternateNames;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getRegion() {
-        return region;
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(final String state) {
+        this.state = state;
     }
 
     public String getCountry() {
         return country;
     }
 
+    public void setCountry(final String country) {
+        this.country = country;
+    }
+
     public Double getLatitude() {
         return latitude;
+    }
+
+    public void setLatitude(final Double latitude) {
+        this.latitude = latitude;
     }
 
     public Double getLongitude() {
         return longitude;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        City city = (City) o;
-        return Objects.equals(name, city.name) &&
-                Objects.equals(region, city.region) &&
-                Objects.equals(country, city.country) &&
-                Objects.equals(latitude, city.latitude) &&
-                Objects.equals(longitude, city.longitude);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, region, country, latitude, longitude);
+    public void setLongitude(final Double longitude) {
+        this.longitude = longitude;
     }
 
 }
