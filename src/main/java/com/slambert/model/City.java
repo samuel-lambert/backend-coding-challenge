@@ -33,6 +33,18 @@ public class City {
     @JsonProperty("alternate_names")
     private List<String> alternateNames;
 
+    public City(final String name,
+                final String state,
+                final String country,
+                final Double latitude,
+                final Double longitude) {
+        this.name = name;
+        this.state = state;
+        this.country = country;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public List<String> getAlternateNames() {
         return alternateNames;
     }
