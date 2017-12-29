@@ -51,7 +51,9 @@ public class AutocompleteManager {
         }
     }
 
-    public Map<String, Set<CityResponse>> query(final String q, final Double latitude, final Double longitude) {
+    public Map<String, Set<CityResponse>> query(final String q,
+                                                final Double clientLatitude,
+                                                final Double clientLongitude) {
         // This funky return type is used to map JSON responses to the following format:
         //
         // {
@@ -72,20 +74,44 @@ public class AutocompleteManager {
         //}
 
         final Map<String, Set<CityResponse>> suggestions = new HashMap<>();
-        final Set<City> suggestedCities = trie.get(q);
         final Set<CityResponse> cityResponses = new TreeSet<>();
+        final Set<City> suggestedCities = trie.get(q);
 
-        // TODO: suggestedCities -> CityResponse
+        for (final City c : suggestedCities) {
+            // TODO: will need to add state/country hints rank as well.
+            cityResponses.add(new CityResponse(c, rankByDistance(c, clientLatitude, clientLongitude)));
+        }
 
         // TODO 29/12/2017:
         // - fix nasty bug
-        // - mock impl of autocompletemanager (distance score)
         // - document/improve autocompletemanager
         // - autocomplete manager unit tests
 
         suggestions.put("suggestions", cityResponses);
 
         return suggestions;
+    }
+
+    private Double rankByDistance(final City city,
+                                  final Double clientLatitude,
+                                  final Double clientLongitude) {
+        // Normalizing coordinates so they map to values in interval [0, 1]
+        final Double normalizedClientLatitude = normalizeLatitude(clientLatitude);
+        final Double normalizedClientLongitude = normalizeLongitude(clientLongitude);
+        final Double normalizedCityLatitude = normalizeLatitude(city.getLatitude());
+        final Double normalizedCityLongitude = normalizeLongitude(city.getLongitude());
+
+        // TODO: clean this up! longitude should account for more?
+        return 1.0 - ((Math.abs(normalizedClientLatitude - normalizedCityLatitude) / 2.0) +
+                (Math.abs(normalizedClientLongitude - normalizedCityLongitude) / 2.0));
+    }
+
+    private Double normalizeLatitude(final Double latitude) {
+        return (latitude + 90.0) / 180.0;
+    }
+
+    private Double normalizeLongitude(final Double longitude) {
+        return (longitude + 180.0) / 360.0;
     }
 
 }
