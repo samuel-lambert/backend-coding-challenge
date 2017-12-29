@@ -37,7 +37,7 @@ public class CityResponseTest {
     public void testComparableLess() {
         final CityResponse ar = new CityResponse(a, 0.0);
         final CityResponse br = new CityResponse(b, 1.0);
-        assertTrue(ar.compareTo(br) < 0);
+        assertTrue(ar.compareTo(br) > 0);
     }
 
 
@@ -45,7 +45,7 @@ public class CityResponseTest {
     public void testComparableGreater() {
         final CityResponse ar = new CityResponse(a, 1.0);
         final CityResponse br = new CityResponse(b, 0.0);
-        assertTrue(ar.compareTo(br) > 0);
+        assertTrue(ar.compareTo(br) < 0);
     }
 
     @Test
