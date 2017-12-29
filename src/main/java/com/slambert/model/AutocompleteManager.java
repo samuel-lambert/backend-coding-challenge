@@ -17,14 +17,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class AutocompleteManager {
 
     private static final String CITIES_DATA_FILE = "cities_canada-usa.json";
 
-    private List<City> cities;
-    private AutocompleteTrie<City> trie;
+    private final List<City> cities;
+    private final AutocompleteTrie<City> trie;
 
     public AutocompleteManager() throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
@@ -49,7 +50,7 @@ public class AutocompleteManager {
         }
     }
 
-    public Map<String, List<City>> query(final String q, final Double latitude, final Double longitude) {
+    public Map<String, Set<City>> query(final String q, final Double latitude, final Double longitude) {
         // This funky return type is used to map JSON responses to the following format:
         //
         // {
@@ -69,10 +70,15 @@ public class AutocompleteManager {
         //  ]
         //}
 
-        final Map<String, List<City>> result = new HashMap<>();
-        final List<City> suggestedCities = trie.get(q);
+        final Map<String, Set<City>> result = new HashMap<>();
+        final Set<City> suggestedCities = trie.get(q);
 
-        // TODO: fill the list with suggestions and scores
+        // TODO 29/12/2017:
+        // - fill the list with suggestions and scores with good format
+        // - fix nasty bug
+        // - mock impl of autocompletemanager (distance score)
+        // - document/improve autocompletemanager
+        // - autocomplete manager unit tests
 
         result.put("suggestions", suggestedCities);
 

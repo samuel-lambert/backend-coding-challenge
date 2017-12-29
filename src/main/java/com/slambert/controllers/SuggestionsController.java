@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 public class SuggestionsController {
@@ -33,9 +33,9 @@ public class SuggestionsController {
     private ConfigurationManager configurationManager;
 
     @RequestMapping(value = SUGGESTIONS_PATH, method = RequestMethod.GET)
-    public Map<String, List<City>> getSuggestions(@RequestParam final String q,
-                                                  @RequestParam final Optional<Double> latitude,
-                                                  @RequestParam final Optional<Double> longitude) {
+    public Map<String, Set<City>> getSuggestions(@RequestParam final String q,
+                                                 @RequestParam final Optional<Double> latitude,
+                                                 @RequestParam final Optional<Double> longitude) {
         // Example query: GET /suggestions?q=Londo&latitude=43.70011&longitude=-79.4163
         // Note: this funky return type is used to map JSON response to expected format
 

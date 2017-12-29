@@ -11,7 +11,7 @@ package com.slambert.model;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
@@ -48,24 +48,24 @@ public class AutocompleteTrieTest {
         trie.add("shells", 3);
         trie.add("by", 4);
         trie.add("the", 5);
-        trie.add("sea", 6); // overwriting...
+        trie.add("sea", 6);
         trie.add("shore", 7);
 
-        final List<Integer> result1 = trie.get("by");
+        final Set<Integer> result1 = trie.get("by");
         assertEquals(result1.size(), 1);
         assertThat(result1, hasItems(4));
 
-        final List<Integer> result2 = trie.get("the");
+        final Set<Integer> result2 = trie.get("the");
         assertEquals(result2.size(), 1);
         assertThat(result2, hasItems(5));
 
-        final List<Integer> result3 = trie.get("she");
+        final Set<Integer> result3 = trie.get("she");
         assertEquals(result3.size(), 2);
         assertThat(result3, hasItems(0, 3));
 
-        final List<Integer> result4 = trie.get("s");
-        assertEquals(result4.size(), 5);
-        assertThat(result4, hasItems(0, 1, 3, 6, 7));
+        final Set<Integer> result4 = trie.get("s");
+        assertEquals(result4.size(), 6);
+        assertThat(result4, hasItems(0, 1, 2, 3, 6, 7));
     }
 
 }

@@ -8,9 +8,7 @@
 
 package com.slambert.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,9 +28,9 @@ public class AutocompleteTrie<T> {
      * of all keys compatible with the query string.
      *
      * @param query string containing the search query to perform
-     * @return list of all keys compatible with the query string
+     * @return set of all elements compatible with the query string
      */
-    public List<T> get(final String query) {
+    public Set<T> get(final String query) {
         // Retrieving the node corresponding of the last query string
         // character then recursively get all elements of the sub-tries.
         final Node node = get(query, 0, root);
@@ -40,7 +38,8 @@ public class AutocompleteTrie<T> {
         // Using an intermediate set to avoid duplication
         final Set<T> results = new HashSet<>();
         findElements(node, results);
-        return new ArrayList<>(results);
+
+        return results;
     }
 
     private Node get(final String query, final Integer index, Node node) {
@@ -81,12 +80,15 @@ public class AutocompleteTrie<T> {
     /**
      * Inserts the specified key in the trie and associate the
      * given element with this key.
+     * Note: the trie is case-insensitive.
      *
      * @param key     key to be added in the autocomplete trie
      * @param element element to be associated with the key
      */
     public void add(final String key, final T element) {
-        root = add(key, element, 0, root);
+        // The keys are stored in lower case because this trie
+        // does not support case-sensitiveness by design.
+        root = add(key.toLowerCase(), element, 0, root);
     }
 
     private Node add(final String key, final T element, final Integer index, Node node) {
