@@ -44,7 +44,8 @@ public class SuggestionsController {
         final Double sanitizedLongitude =
                 longitude.isPresent() ? longitude.get() : configurationManager.getFallbackLongitude();
 
-        return autocompleteManager.query(q, sanitizedLatitude, sanitizedLongitude);
+        // All keys in the trie have been stored in lower case
+        return autocompleteManager.query(q.toLowerCase(), sanitizedLatitude, sanitizedLongitude);
     }
 
 }

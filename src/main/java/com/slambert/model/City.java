@@ -11,6 +11,7 @@ package com.slambert.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Objects;
 
 public class City {
 
@@ -78,6 +79,29 @@ public class City {
 
     public void setLongitude(final Double longitude) {
         this.longitude = longitude;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        final City city = (City) other;
+        return Objects.equals(name, city.name) &&
+                Objects.equals(state, city.state) &&
+                Objects.equals(country, city.country) &&
+                Objects.equals(latitude, city.latitude) &&
+                Objects.equals(longitude, city.longitude);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, state, country, latitude, longitude);
     }
 
 }

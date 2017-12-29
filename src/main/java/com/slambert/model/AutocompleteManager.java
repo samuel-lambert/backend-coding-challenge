@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +22,7 @@ import java.util.Map;
 public class AutocompleteManager {
 
     private static final String CITIES_DATA_FILE = "cities_canada-usa.json";
+
     private List<City> cities;
     private AutocompleteTrie<City> trie;
 
@@ -70,7 +70,7 @@ public class AutocompleteManager {
         //}
 
         final Map<String, List<City>> result = new HashMap<>();
-        final List<City> suggestedCities = new ArrayList<>();
+        final List<City> suggestedCities = trie.get(q);
 
         // TODO: fill the list with suggestions and scores
 

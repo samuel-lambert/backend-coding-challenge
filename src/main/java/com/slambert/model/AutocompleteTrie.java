@@ -9,7 +9,9 @@
 package com.slambert.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class implements a ternary search trie that can return all
@@ -35,9 +37,10 @@ public class AutocompleteTrie<T> {
         // character then recursively get all elements of the sub-tries.
         final Node node = get(query, 0, root);
 
-        final List<T> results = new ArrayList<>();
+        // using an intermediate set to avoid duplication
+        final Set<T> results = new HashSet<>();
         findElements(node, results);
-        return results;
+        return new ArrayList<>(results);
     }
 
     private Node get(final String query, final Integer index, Node node) {
@@ -58,7 +61,7 @@ public class AutocompleteTrie<T> {
         return node;
     }
 
-    private void findElements(final Node node, final List<T> results) {
+    private void findElements(final Node node, final Set<T> results) {
         if (node == null) {
             return;
         }
