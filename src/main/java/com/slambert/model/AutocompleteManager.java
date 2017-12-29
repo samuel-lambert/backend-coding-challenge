@@ -24,6 +24,7 @@ import java.util.TreeSet;
 public class AutocompleteManager {
 
     private static final String CITIES_DATA_FILE = "cities_canada-usa.json";
+    private static final Double MAXIMUM_DISTANCE = getMaximumDistance();
 
     private final List<City> cities;
     private final AutocompleteTrie<City> trie;
@@ -51,9 +52,35 @@ public class AutocompleteManager {
         }
     }
 
+    private static Double getMaximumDistance() {
+        return calculateDistance(-90.0, -180.0, 90.0, 180.0);
+    }
+
+    // TODO: might want to put this somewhere else...
+    // ref!
+    private static Double calculateDistance(final Double lat1,
+                                            final Double lon1,
+                                            final Double lat2,
+                                            final Double lon2) {
+        // Calculating distance between 2 points (km) with the Haversine formula.
+        final Double earthRadius = 6371.0;
+
+        final Double latDistance = Math.toRadians(lat2 - lat1);
+        final Double lonDistance = Math.toRadians(lon2 - lon1);
+        final Double startLat = Math.toRadians(lat1);
+        final Double endLat = Math.toRadians(lat2);
+
+        final Double a = Math.sin(latDistance / 2.0) * Math.sin(latDistance / 2.0) +
+                Math.cos(startLat) * Math.cos(endLat) * Math.sin(lonDistance / 2.0) * Math.sin(lonDistance / 2.0);
+        final Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+
+        return earthRadius * c;
+
+    }
+
     public Map<String, Set<CityResponse>> query(final String q,
-                                                final Double clientLatitude,
-                                                final Double clientLongitude) {
+                                                final Double clientLat,
+                                                final Double clientLon) {
         // This funky return type is used to map JSON responses to the following format:
         //
         // {
@@ -78,12 +105,12 @@ public class AutocompleteManager {
         final Set<City> suggestedCities = trie.get(q);
 
         for (final City c : suggestedCities) {
-            // TODO: will need to add state/country hints rank as well.
-            cityResponses.add(new CityResponse(c, rankByDistance(c, clientLatitude, clientLongitude)));
+            cityResponses.add(new CityResponse(c, rankByDistance(c, clientLat, clientLon)));
         }
 
         // TODO 29/12/2017:
         // - fix nasty bug
+        // - make longitude account for more points
         // - document/improve autocompletemanager
         // - autocomplete manager unit tests
 
@@ -93,25 +120,9 @@ public class AutocompleteManager {
     }
 
     private Double rankByDistance(final City city,
-                                  final Double clientLatitude,
-                                  final Double clientLongitude) {
-        // Normalizing coordinates so they map to values in interval [0, 1]
-        final Double normalizedClientLatitude = normalizeLatitude(clientLatitude);
-        final Double normalizedClientLongitude = normalizeLongitude(clientLongitude);
-        final Double normalizedCityLatitude = normalizeLatitude(city.getLatitude());
-        final Double normalizedCityLongitude = normalizeLongitude(city.getLongitude());
-
-        // TODO: clean this up! longitude should account for more?
-        return 1.0 - ((Math.abs(normalizedClientLatitude - normalizedCityLatitude) / 2.0) +
-                (Math.abs(normalizedClientLongitude - normalizedCityLongitude) / 2.0));
+                                  final Double clientLat,
+                                  final Double clientLon) {
+        final Double distance = calculateDistance(clientLat, clientLon, city.getLatitude(), city.getLongitude());
+        return 1.0 - (distance / MAXIMUM_DISTANCE);
     }
-
-    private Double normalizeLatitude(final Double latitude) {
-        return (latitude + 90.0) / 180.0;
-    }
-
-    private Double normalizeLongitude(final Double longitude) {
-        return (longitude + 180.0) / 360.0;
-    }
-
 }
