@@ -15,7 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class AutocompleteManager {
@@ -32,14 +34,49 @@ public class AutocompleteManager {
             final File file = new File(classLoader.getResource(CITIES_DATA_FILE).getFile());
             cities = Arrays.asList(mapper.readValue(file, City[].class));
             trie = new AutocompleteTrie<>();
+
+            // Populating trie with city names as keys
+            for (final City c : cities) {
+                trie.add(c.getName(), c);
+
+                // Also adding alternate names with the same city object
+                for (final String s : c.getAlternateNames()) {
+                    trie.add(s, c);
+                }
+            }
         } catch (final Exception e) {
-            throw new IOException("Could not parse JSON city data");
+            throw new IOException("Unexpected error: could not parse JSON city data");
         }
     }
 
-    public List<City> query(final String q, final Double latitude, final Double longitude) {
-        // TODO: need to return JSON data according to expectations!
-        return new ArrayList<>();
+    public Map<String, List<City>> query(final String q, final Double latitude, final Double longitude) {
+        // This funky return type is used to map JSON responses to the following format:
+        //
+        // {
+        //  "suggestions": [
+        //    {
+        //      "name": "London, ON, Canada",
+        //      "latitude": "42.98339",
+        //      "longitude": "-81.23304",
+        //      "score": 0.9
+        //    },
+        //    {
+        //      "name": "Londontowne, MD, USA",
+        //      "latitude": "38.93345",
+        //      "longitude": "-76.54941",
+        //      "score": 0.3
+        //    }
+        //  ]
+        //}
+
+        final Map<String, List<City>> result = new HashMap<>();
+        final List<City> suggestedCities = new ArrayList<>();
+
+        // TODO: fill the list with suggestions and scores
+
+        result.put("suggestions", suggestedCities);
+
+        return result;
     }
 
 }

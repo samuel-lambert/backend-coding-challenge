@@ -21,7 +21,6 @@ public class CityAutocompleteService {
         try {
             final AutocompleteManager autocompleteManager = new AutocompleteManager();
         } catch (final IOException e) {
-            // TODO: might improve error handling...
             System.err.println(e);
             System.exit(1);
         }
