@@ -33,11 +33,11 @@ public class AutocompleteTrie<T> {
      * @return list of all keys compatible with the query string
      */
     public List<T> get(final String query) {
-        // retrieving the node corresponding of the last query string
+        // Retrieving the node corresponding of the last query string
         // character then recursively get all elements of the sub-tries.
         final Node node = get(query, 0, root);
 
-        // using an intermediate set to avoid duplication
+        // Using an intermediate set to avoid duplication
         final Set<T> results = new HashSet<>();
         findElements(node, results);
         return new ArrayList<>(results);
@@ -66,8 +66,8 @@ public class AutocompleteTrie<T> {
             return;
         }
 
-        if (node.element != null) {
-            results.add(node.element);
+        if (!node.elements.isEmpty()) {
+            results.addAll(node.elements);
         }
 
         findElements(node.middle, results);
@@ -104,18 +104,18 @@ public class AutocompleteTrie<T> {
         } else if (index < key.length() - 1) {
             node.middle = add(key, element, index + 1, node.middle);
         } else {
-            node.element = element;
+            node.elements.add(element);
         }
 
         return node;
     }
 
     private class Node {
-        public Character c; // character
-        public Node left;   // left sub-trie
-        public Node middle; // middle sub-trie
-        public Node right;  // right sub-trie
-        T element;          // value associated with the string
+        public Character c;                 // Character
+        public Node left;                   // Left sub-trie
+        public Node middle;                 // Middle sub-trie
+        public Node right;                  // Right sub-trie
+        Set<T> elements = new HashSet<>();  // Values associated with the string
     }
 
 }
