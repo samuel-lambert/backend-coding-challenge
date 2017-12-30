@@ -13,6 +13,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class models a city as represented as the
+ * included JSON data.
+ */
 public class City {
 
     @JsonProperty("name")
@@ -33,15 +37,23 @@ public class City {
     @JsonProperty("alternate_names")
     private List<String> alternateNames;
 
+    /**
+     * Constructs an empty city object
+     */
     public City() {
         // Empty constructor needed by Spring...
     }
 
-    public City(final String name,
-                final String state,
-                final String country,
-                final Double latitude,
-                final Double longitude) {
+    /**
+     * Constructs a city object
+     *
+     * @param name      city name
+     * @param state     city state or province
+     * @param country   city country
+     * @param latitude  city latitude
+     * @param longitude city longitude
+     */
+    public City(String name, String state, String country, Double latitude, Double longitude) {
         this.name = name;
         this.state = state;
         this.country = country;
@@ -49,56 +61,117 @@ public class City {
         this.longitude = longitude;
     }
 
-    public List<String> getAlternateNames() {
-        return alternateNames;
-    }
-
-    public void setAlternateNames(final List<String> alternateNames) {
-        this.alternateNames = alternateNames;
-    }
-
+    /**
+     * Returns city name
+     *
+     * @return city name
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
+
+    /**
+     * Sets city name
+     *
+     * @param name city name
+     */
+    public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns alternate city names
+     *
+     * @return alternate city names
+     */
+    public List<String> getAlternateNames() {
+        return alternateNames;
+    }
+
+    /**
+     * Sets city alternate names
+     *
+     * @param alternateNames alternate city names
+     */
+    public void setAlternateNames(List<String> alternateNames) {
+        this.alternateNames = alternateNames;
+    }
+
+    /**
+     * Returns city name or province
+     *
+     * @return city name of province
+     */
     public String getState() {
         return state;
     }
 
-    public void setState(final String state) {
+    /**
+     * Sets city state or province
+     *
+     * @param state city state or province
+     */
+    public void setState(String state) {
         this.state = state;
     }
 
+    /**
+     * Returns city country
+     *
+     * @return city country
+     */
     public String getCountry() {
         return country;
     }
 
-    public void setCountry(final String country) {
+    /**
+     * Sets city country
+     *
+     * @param country city country
+     */
+    public void setCountry(String country) {
         this.country = country;
     }
 
+    /**
+     * Returns city latitude
+     *
+     * @return city latitude
+     */
     public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(final Double latitude) {
+    /**
+     * Sets city latitude
+     *
+     * @param latitude city latitude
+     */
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
+    /**
+     * Returns city longitude
+     *
+     * @return city longitude
+     */
     public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(final Double longitude) {
+    /**
+     * Sets city longitude
+     *
+     * @param longitude city longitude
+     */
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(Object other) {
         if (this == other) {
             return true;
         }
@@ -107,7 +180,7 @@ public class City {
             return false;
         }
 
-        final City city = (City) other;
+        City city = (City) other;
         return Objects.equals(name, city.name) &&
                 Objects.equals(state, city.state) &&
                 Objects.equals(country, city.country) &&

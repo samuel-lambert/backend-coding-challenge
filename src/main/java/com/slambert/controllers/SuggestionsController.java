@@ -8,9 +8,9 @@
 
 package com.slambert.controllers;
 
+import com.slambert.ConfigurationManager;
 import com.slambert.model.AutocompleteManager;
 import com.slambert.model.CityResponse;
-import com.slambert.model.ConfigurationManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,15 +33,15 @@ public class SuggestionsController {
     private ConfigurationManager configurationManager;
 
     @RequestMapping(value = SUGGESTIONS_PATH, method = RequestMethod.GET)
-    public Map<String, Set<CityResponse>> getSuggestions(@RequestParam final String q,
-                                                         @RequestParam final Optional<Double> latitude,
-                                                         @RequestParam final Optional<Double> longitude) {
+    public Map<String, Set<CityResponse>> getSuggestions(@RequestParam String q,
+                                                         @RequestParam Optional<Double> latitude,
+                                                         @RequestParam Optional<Double> longitude) {
         // Example query: GET /suggestions?q=Londo&latitude=43.70011&longitude=-79.4163
-        // Note: this funky return type is used to map JSON response to expected format
+        // Note: this funky return type is used to map upcoming JSON response to expected format
 
-        final Double sanitizedLatitude =
+        Double sanitizedLatitude =
                 latitude.isPresent() ? latitude.get() : configurationManager.getFallbackLatitude();
-        final Double sanitizedLongitude =
+        Double sanitizedLongitude =
                 longitude.isPresent() ? longitude.get() : configurationManager.getFallbackLongitude();
 
         // All keys in the trie have been stored in lower case

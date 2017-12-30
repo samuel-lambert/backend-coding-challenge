@@ -6,7 +6,7 @@
 // This software may be modified and distributed under the terms
 // of the MIT license. See the LICENSE file for details.
 
-package com.slambert.model;
+package com.slambert;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
@@ -25,7 +25,7 @@ public class ConfigurationManager {
         return retrieveUserLocation;
     }
 
-    public void setRetrieveUserLocation(final Boolean retrieveUserLocation) {
+    public void setRetrieveUserLocation(Boolean retrieveUserLocation) {
         this.retrieveUserLocation = retrieveUserLocation;
     }
 
@@ -33,7 +33,7 @@ public class ConfigurationManager {
         return fallbackLatitude;
     }
 
-    public void setFallbackLatitude(final Double fallbackLatitude) {
+    public void setFallbackLatitude(Double fallbackLatitude) {
         this.fallbackLatitude = fallbackLatitude;
     }
 
@@ -41,7 +41,7 @@ public class ConfigurationManager {
         return fallbackLongitude;
     }
 
-    public void setFallbackLongitude(final Double fallbackLongitude) {
+    public void setFallbackLongitude(Double fallbackLongitude) {
         this.fallbackLongitude = fallbackLongitude;
     }
 

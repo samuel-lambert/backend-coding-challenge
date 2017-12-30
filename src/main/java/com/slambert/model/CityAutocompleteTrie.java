@@ -17,37 +17,42 @@ import java.util.Set;
  * associated with the key.
  * <p>
  * Inspired by the Ternary Search Trie proposed by Sedgewick & Wayne
- * Reference: Algorithms 4th edition, page 747.s
+ * Reference: Algorithms 4th edition, page 747.
  */
-public class AutocompleteTrie<T> {
+public class CityAutocompleteTrie {
 
     private Node root;
 
     /**
-     * Searches the trie according to the query and returns a list
+     * Searches the trie according to the query and returns a set
      * of all keys compatible with the query string.
      *
      * @param query string containing the search query to perform
      * @return set of all elements compatible with the query string
      */
-    public Set<T> get(final String query) {
+    public Set<City> get(String query) {
         // Retrieving the node corresponding of the last query string
         // character then recursively get all elements of the sub-tries.
-        final Node node = get(query, 0, root);
+        Node node = get(query, 0, root);
+        Set<City> results = new HashSet<>();
 
-        // Using an intermediate set to avoid duplication
-        final Set<T> results = new HashSet<>();
-        findElements(node, results);
+        if (node != null) {
+            results.addAll(node.elements);
+
+            // Immediate left and right nodes contain characters
+            // not in prefix. Start recursive search at middle node.
+            findElements(node.middle, results);
+        }
 
         return results;
     }
 
-    private Node get(final String query, final Integer index, Node node) {
+    private Node get(String query, Integer index, Node node) {
         if (node == null) {
             return null;
         }
 
-        final Character c = query.charAt(index);
+        Character c = query.charAt(index);
 
         if (c < node.c) {
             return get(query, index, node.left);
@@ -60,7 +65,7 @@ public class AutocompleteTrie<T> {
         return node;
     }
 
-    private void findElements(final Node node, final Set<T> results) {
+    private void findElements(Node node, Set<City> results) {
         if (node == null) {
             return;
         }
@@ -69,12 +74,9 @@ public class AutocompleteTrie<T> {
             results.addAll(node.elements);
         }
 
+        findElements(node.left, results);
         findElements(node.middle, results);
-
-        if (node.middle != null) {
-            findElements(node.middle.left, results);
-            findElements(node.middle.right, results);
-        }
+        findElements(node.right, results);
     }
 
     /**
@@ -85,14 +87,14 @@ public class AutocompleteTrie<T> {
      * @param key     key to be added in the autocomplete trie
      * @param element element to be associated with the key
      */
-    public void add(final String key, final T element) {
+    public void add(String key, City element) {
         // The keys are stored in lower case because this trie
         // does not support case-sensitiveness by design.
         root = add(key.toLowerCase(), element, 0, root);
     }
 
-    private Node add(final String key, final T element, final Integer index, Node node) {
-        final Character c = key.charAt(index);
+    private Node add(String key, City element, Integer index, Node node) {
+        Character c = key.charAt(index);
 
         if (node == null) {
             node = new Node();
@@ -113,11 +115,11 @@ public class AutocompleteTrie<T> {
     }
 
     private class Node {
-        public Character c;                 // Character
-        public Node left;                   // Left sub-trie
-        public Node middle;                 // Middle sub-trie
-        public Node right;                  // Right sub-trie
-        Set<T> elements = new HashSet<>();  // Values associated with the string
+        public Character c;                    // Character
+        public Node left;                      // Left sub-trie
+        public Node middle;                    // Middle sub-trie
+        public Node right;                     // Right sub-trie
+        Set<City> elements = new HashSet<>();  // Values associated with the string
     }
 
 }

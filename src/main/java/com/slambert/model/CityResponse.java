@@ -8,44 +8,73 @@
 
 package com.slambert.model;
 
-public class CityResponse implements Comparable<CityResponse> {
-    private final String name;
-    private final Double latitude;
-    private final Double longitude;
-    private final Double score;
+import org.apache.commons.lang3.text.WordUtils;
 
-    public CityResponse(final City city, final Double score) {
-        // Formatting of the city name as follow: "Montréal, QC, CA"
-        this.name = city.getName().substring(0, 1).toUpperCase() +
-                city.getName().substring(1) +
-                ", " +
-                city.getState().toUpperCase() +
-                ", " +
-                city.getCountry().toUpperCase();
+/**
+ * This class is an adapter to a City object with the only
+ * purpose of being displayed as a JSON response.
+ */
+public class CityResponse implements Comparable<CityResponse> {
+    private String name;
+    private Double latitude;
+    private Double longitude;
+    private Double score;
+
+    /**
+     * Constructs a CityResponse object
+     *
+     * @param city  city object to adapt
+     * @param score score assigned to this city
+     */
+    public CityResponse(City city, Double score) {
+        // Formattinf city name as follow: "Montréal, QC, CA"
+        this.name = WordUtils.capitalizeFully(city.getName(), ' ', '-') +
+                ", " + city.getState().toUpperCase() +
+                ", " + city.getCountry().toUpperCase();
 
         this.latitude = city.getLatitude();
         this.longitude = city.getLongitude();
         this.score = score;
     }
 
+    /**
+     * Returns formatted city name
+     *
+     * @return formatted city name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns city latitude
+     *
+     * @return city latitude
+     */
     public Double getLatitude() {
         return latitude;
     }
 
+    /**
+     * Returns city longitude
+     *
+     * @return city longitude
+     */
     public Double getLongitude() {
         return longitude;
     }
 
+    /**
+     * Returns city score
+     *
+     * @return city score
+     */
     public Double getScore() {
         return score;
     }
 
     @Override
-    public int compareTo(final CityResponse rhs) {
+    public int compareTo(CityResponse rhs) {
         // Reverting lhs/rhs because these objects
         // need to be sorted in reverse order.
         if (score == rhs.score) {

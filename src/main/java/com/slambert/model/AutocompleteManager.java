@@ -9,6 +9,7 @@
 package com.slambert.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.slambert.utils.DistanceUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -20,109 +21,74 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * This class contains everything needed to query the autocomplete
+ * data and obtain "scored" results according to client's location.
+ */
 @Component
 public class AutocompleteManager {
 
     private static final String CITIES_DATA_FILE = "cities_canada-usa.json";
-    private static final Double MAXIMUM_DISTANCE = getMaximumDistance();
 
-    private final List<City> cities;
-    private final AutocompleteTrie<City> trie;
+    private CityAutocompleteTrie trie;
+    private List<City> cities;
 
+    /**
+     * Constructs the autocomplete trie with the data obtained in the
+     * included JSON file.
+     */
     public AutocompleteManager() throws IOException {
-        final ObjectMapper mapper = new ObjectMapper();
-        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ObjectMapper mapper = new ObjectMapper();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         try {
-            final File file = new File(classLoader.getResource(CITIES_DATA_FILE).getFile());
+            File file = new File(classLoader.getResource(CITIES_DATA_FILE).getFile());
             cities = Arrays.asList(mapper.readValue(file, City[].class));
-            trie = new AutocompleteTrie<>();
+            trie = new CityAutocompleteTrie();
 
             // Populating trie with city names as keys
-            for (final City c : cities) {
+            for (City c : cities) {
                 trie.add(c.getName(), c);
 
                 // Also adding alternate names with the same city object
-                for (final String s : c.getAlternateNames()) {
+                for (String s : c.getAlternateNames()) {
                     trie.add(s, c);
                 }
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             throw new IOException("Unexpected error: could not parse JSON city data");
         }
     }
 
-    private static Double getMaximumDistance() {
-        return calculateDistance(-90.0, -180.0, 90.0, 180.0);
-    }
+    /**
+     * Returns sorted city suggestions according to the query string. Scores are added to
+     * each city according to its distance and client location.
+     *
+     * @param q         query string sent by the client
+     * @param clientLat latitude of the client
+     * @param clientLon longitude of the client
+     * @return city suggestions according to the query string
+     */
+    public Map<String, Set<CityResponse>> query(String q, Double clientLat, Double clientLon) {
+        // This funky return type is used to map JSON responses to the expected format...
 
-    // TODO: might want to put this somewhere else...
-    // ref!
-    private static Double calculateDistance(final Double lat1,
-                                            final Double lon1,
-                                            final Double lat2,
-                                            final Double lon2) {
-        // Calculating distance between 2 points (km) with the Haversine formula.
-        final Double earthRadius = 6371.0;
+        Map<String, Set<CityResponse>> suggestions = new HashMap<>();
+        Set<CityResponse> cityResponses = new TreeSet<>();
+        Set<City> suggestedCities = trie.get(q);
 
-        final Double latDistance = Math.toRadians(lat2 - lat1);
-        final Double lonDistance = Math.toRadians(lon2 - lon1);
-        final Double startLat = Math.toRadians(lat1);
-        final Double endLat = Math.toRadians(lat2);
-
-        final Double a = Math.sin(latDistance / 2.0) * Math.sin(latDistance / 2.0) +
-                Math.cos(startLat) * Math.cos(endLat) * Math.sin(lonDistance / 2.0) * Math.sin(lonDistance / 2.0);
-        final Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
-
-        return earthRadius * c;
-
-    }
-
-    public Map<String, Set<CityResponse>> query(final String q,
-                                                final Double clientLat,
-                                                final Double clientLon) {
-        // This funky return type is used to map JSON responses to the following format:
-        //
-        // {
-        //  "suggestions": [
-        //    {
-        //      "name": "London, ON, Canada",
-        //      "latitude": "42.98339",
-        //      "longitude": "-81.23304",
-        //      "score": 0.9
-        //    },
-        //    {
-        //      "name": "Londontowne, MD, USA",
-        //      "latitude": "38.93345",
-        //      "longitude": "-76.54941",
-        //      "score": 0.3
-        //    }
-        //  ]
-        //}
-
-        final Map<String, Set<CityResponse>> suggestions = new HashMap<>();
-        final Set<CityResponse> cityResponses = new TreeSet<>();
-        final Set<City> suggestedCities = trie.get(q);
-
-        for (final City c : suggestedCities) {
+        for (City c : suggestedCities) {
             cityResponses.add(new CityResponse(c, rankByDistance(c, clientLat, clientLon)));
         }
 
-        // TODO 29/12/2017:
-        // - fix nasty bug
-        // - make longitude account for more points
-        // - document/improve autocompletemanager
-        // - autocomplete manager unit tests
-
         suggestions.put("suggestions", cityResponses);
-
         return suggestions;
     }
 
-    private Double rankByDistance(final City city,
-                                  final Double clientLat,
-                                  final Double clientLon) {
-        final Double distance = calculateDistance(clientLat, clientLon, city.getLatitude(), city.getLongitude());
-        return 1.0 - (distance / MAXIMUM_DISTANCE);
+    private Double rankByDistance(City city, Double clientLat, Double clientLon) {
+        Double distance = DistanceUtils.calculateDistance(clientLat, clientLon, city.getLatitude(), city.getLongitude());
+
+        // Following division normalizes distance so it is between interval [0, 1]
+        return 1.0 - (distance / DistanceUtils.getMaximumDistance());
     }
+
 }

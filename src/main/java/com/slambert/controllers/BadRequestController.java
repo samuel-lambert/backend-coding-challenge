@@ -28,8 +28,8 @@ public class BadRequestController implements ErrorController {
     private ErrorAttributes errorAttributes;
 
     @RequestMapping(value = ERROR_PATH)
-    public Map<String, Object> returnError(final HttpServletRequest request) {
-        final RequestAttributes requestAttributes = new ServletRequestAttributes(request);
+    public Map<String, Object> returnError(HttpServletRequest request) {
+        RequestAttributes requestAttributes = new ServletRequestAttributes(request);
         return errorAttributes.getErrorAttributes(requestAttributes, false);
     }
 
