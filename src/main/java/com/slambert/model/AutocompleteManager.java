@@ -9,7 +9,7 @@
 package com.slambert.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.slambert.utils.DistanceUtils;
+import com.slambert.utils.GeoUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -85,10 +85,10 @@ public class AutocompleteManager {
     }
 
     private Double rankByDistance(City city, Double clientLat, Double clientLon) {
-        Double distance = DistanceUtils.calculateDistance(clientLat, clientLon, city.getLatitude(), city.getLongitude());
+        Double distance = GeoUtils.calculateDistance(clientLat, clientLon, city.getLatitude(), city.getLongitude());
 
         // Following division normalizes distance so it is between interval [0, 1]
-        return 1.0 - (distance / DistanceUtils.getMaximumDistance());
+        return 1.0 - (distance / GeoUtils.getMaximumDistance());
     }
 
 }

@@ -11,7 +11,7 @@ package com.slambert.utils;
 /**
  * This class contains various distance-related utilities
  */
-public class DistanceUtils {
+public class GeoUtils {
 
     private static final Double EARTH_RADIUS = 6371.0;
 
