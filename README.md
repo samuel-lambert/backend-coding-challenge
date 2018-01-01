@@ -19,6 +19,29 @@ Design an API endpoint that provides auto-complete suggestions for large cities.
 - *You can use the language and technology of your choosing.* It's OK to try something new (tell us if you do), but feel free to use something you're comfortable with. We don't care if you use something we don't; the goal here is not to validate your knowledge of a particular technology.
 - End result should be deployed on a public Cloud (Heroku, AWS etc. all have free tiers you can use).
 
+## Configuration
+
+Various configuration options can be set in a configuration file, which can be found at the root folder as
+'application.properties'. These options are:
+
+####retrieve_user_location
+Should the service try to use the IP address of the client to improve accuracy of the score if the latitude and/or longitude
+are not included in the URL?
+Valid choices: true or false
+
+####fallback_latitude
+What would be the default latitude used to calculate scores if it was not included in the URL and 'retrieve_user_location' is
+not enabled?
+Valid choices: Anything between -90.0 and 90.0 inclusively
+
+####fallback_longitude
+What would be the default longitude used to calculate scores if it was not included in the URL and 'retrieve_user_location' is
+not enabled?
+Valid choices: Anything between -180.0 and 180.0 inclusively
+
+Note: this configuration file is managed by the Spring Framework, This means you can also override any Spring-related
+options in this file, such as server address or port number.
+
 ## Usage
 
 To clone the repository:

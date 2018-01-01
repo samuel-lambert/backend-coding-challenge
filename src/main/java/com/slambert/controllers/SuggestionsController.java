@@ -26,11 +26,9 @@ import java.util.Set;
 
 // TODO:
 // - fix transaction with latitude/longitude
-// - autocomplete manager unit tests
-// - document field parsing
-// - sponsorded links
-// - test
-// - finish readme
+// - sponsored links
+// - test user location
+// - code review
 
 @RestController
 public class SuggestionsController {
@@ -68,6 +66,17 @@ public class SuggestionsController {
         } catch (Exception e) {
             // LOG could not retrieve, using 0.0, 0.0 instead...
         }
+
+        // At the moment, we are taking the query string 'q' as is and only
+        // comparing it with city names prefixes or city names. If a client
+        // is looking up for something like "montreal, qc", we will return
+        // nothing because this controller is not smart. A good way of doing
+        // this would be to parse the query string and try to find state/province
+        // and country hints. These hints could then contribute to the score.
+        // However, adding this "intelligence" would require more data (all
+        // province/states full names and all their abbreviated names and/or
+        // alternate names. The lack of this data is the reason why I used a
+        // simpler logic.
 
         // All keys in the trie have been stored in lower case
         return autocompleteManager.query(q.toLowerCase(), targetLocation);
