@@ -12,15 +12,25 @@ import com.slambert.ConfigurationManager;
 import com.slambert.model.AutocompleteManager;
 import com.slambert.model.CityResponse;
 import com.slambert.model.Location;
+import com.slambert.utils.GeoUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+// TODO:
+// - fix transaction with latitude/longitude
+// - autocomplete manager unit tests
+// - document field parsing
+// - sponsorded links
+// - test
+// - finish readme
 
 @RestController
 public class SuggestionsController {
@@ -36,18 +46,31 @@ public class SuggestionsController {
     @RequestMapping(value = SUGGESTIONS_PATH, method = RequestMethod.GET)
     public Map<String, Set<CityResponse>> getSuggestions(@RequestParam String q,
                                                          @RequestParam Optional<Double> latitude,
-                                                         @RequestParam Optional<Double> longitude) {
+                                                         @RequestParam Optional<Double> longitude,
+                                                         HttpServletRequest request) {
         // Example query: GET /suggestions?q=Londo&latitude=43.70011&longitude=-79.4163
         // Note: this funky return type is used to map upcoming JSON response to expected format
 
-        Double sanitizedLatitude =
-                latitude.isPresent() ? latitude.get() : configurationManager.getFallbackLatitude();
-        Double sanitizedLongitude =
-                longitude.isPresent() ? longitude.get() : configurationManager.getFallbackLongitude();
+        Double fallbackLatitude = configurationManager.getFallbackLatitude();
+        Double fallbackLongitude = configurationManager.getFallbackLongitude();
+        Location targetLocation = new Location(0.0, 0.0);
+
+        // We always prioritize location specified in the URL, even if the 'retrieveUserLocation'
+        // option is set.
+        try {
+            targetLocation = new Location(fallbackLatitude, fallbackLongitude);
+
+            if (latitude.isPresent() && longitude.isPresent()) {
+                targetLocation = new Location(latitude.get(), longitude.get());
+            } else if (configurationManager.isRetrievingUserLocation()) {
+                targetLocation = GeoUtils.getLocationFromIPAddress(request.getRemoteAddr());
+            }
+        } catch (Exception e) {
+            // LOG could not retrieve, using 0.0, 0.0 instead...
+        }
 
         // All keys in the trie have been stored in lower case
-        Location userLocation = new Location(sanitizedLatitude, sanitizedLongitude);
-        return autocompleteManager.query(q.toLowerCase(), userLocation);
+        return autocompleteManager.query(q.toLowerCase(), targetLocation);
     }
 
 }
