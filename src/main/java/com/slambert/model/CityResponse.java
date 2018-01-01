@@ -27,7 +27,7 @@ public class CityResponse implements Comparable<CityResponse> {
      * @param score score assigned to this city
      */
     public CityResponse(City city, Double score) {
-        // Formattinf city name as follow: "Montréal, QC, CA"
+        // Formatting city name as follow: "Montréal, QC, CA"
         this.name = WordUtils.capitalizeFully(city.getName(), ' ', '-') +
                 ", " + city.getState().toUpperCase() +
                 ", " + city.getCountry().toUpperCase();

@@ -64,12 +64,11 @@ public class AutocompleteManager {
      * Returns sorted city suggestions according to the query string. Scores are added to
      * each city according to its distance and client location.
      *
-     * @param q         query string sent by the client
-     * @param clientLat latitude of the client
-     * @param clientLon longitude of the client
+     * @param q              query string sent by the client
+     * @param clientLocation location of the client
      * @return city suggestions according to the query string
      */
-    public Map<String, Set<CityResponse>> query(String q, Double clientLat, Double clientLon) {
+    public Map<String, Set<CityResponse>> query(String q, Location clientLocation) {
         // This funky return type is used to map JSON responses to the expected format...
 
         Map<String, Set<CityResponse>> suggestions = new HashMap<>();
@@ -77,15 +76,16 @@ public class AutocompleteManager {
         Set<City> suggestedCities = trie.get(q);
 
         for (City c : suggestedCities) {
-            cityResponses.add(new CityResponse(c, rankByDistance(c, clientLat, clientLon)));
+            cityResponses.add(new CityResponse(c, rankByDistance(c, clientLocation)));
         }
 
         suggestions.put("suggestions", cityResponses);
         return suggestions;
     }
 
-    private Double rankByDistance(City city, Double clientLat, Double clientLon) {
-        Double distance = GeoUtils.calculateDistance(clientLat, clientLon, city.getLatitude(), city.getLongitude());
+    private Double rankByDistance(City city, Location clientLocation) {
+        Location cityLocation = new Location(city.getLatitude(), city.getLongitude());
+        Double distance = GeoUtils.calculateDistance(clientLocation, cityLocation);
 
         // Following division normalizes distance so it is between interval [0, 1]
         return 1.0 - (distance / GeoUtils.getMaximumDistance());

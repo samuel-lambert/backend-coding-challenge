@@ -11,6 +11,7 @@ package com.slambert.controllers;
 import com.slambert.ConfigurationManager;
 import com.slambert.model.AutocompleteManager;
 import com.slambert.model.CityResponse;
+import com.slambert.model.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,7 +46,8 @@ public class SuggestionsController {
                 longitude.isPresent() ? longitude.get() : configurationManager.getFallbackLongitude();
 
         // All keys in the trie have been stored in lower case
-        return autocompleteManager.query(q.toLowerCase(), sanitizedLatitude, sanitizedLongitude);
+        Location userLocation = new Location(sanitizedLatitude, sanitizedLongitude);
+        return autocompleteManager.query(q.toLowerCase(), userLocation);
     }
 
 }
