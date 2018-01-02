@@ -9,27 +9,26 @@
 package com.slambert.controllers;
 
 import com.slambert.ConfigurationManager;
-import com.slambert.model.AutocompleteManager;
 import com.slambert.model.CityResponse;
 import com.slambert.model.Location;
+import com.slambert.model.QueryEngine;
 import com.slambert.utils.GeoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-// TODO:
-// - sponsored links
-// - code review
-// - rank results by name as well...
 
 @RestController
 public class SuggestionsController {
@@ -38,7 +37,7 @@ public class SuggestionsController {
     private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsController.class);
 
     @Autowired
-    private AutocompleteManager autocompleteManager;
+    private QueryEngine queryEngine;
 
     @Autowired
     private ConfigurationManager configurationManager;
@@ -51,22 +50,27 @@ public class SuggestionsController {
         // Example query: GET /suggestions?q=Londo&latitude=43.70011&longitude=-79.4163
         // Note: this funky return type is used to map upcoming JSON response to expected format
 
-        Double fallbackLatitude = configurationManager.getFallbackLatitude();
-        Double fallbackLongitude = configurationManager.getFallbackLongitude();
-        Location targetLocation = new Location(0.0, 0.0);
+        if (q.isEmpty()) {
+            throw new IllegalArgumentException("The 'q' parameter must not be null or empty");
+        }
+
+        if (latitude.isPresent() && !longitude.isPresent() || !latitude.isPresent() && longitude.isPresent()) {
+            throw new IllegalArgumentException("The 'latitude' and 'longitude must either be both present or not");
+        }
+
+        Location clientLocation = new Location(
+                configurationManager.getFallbackLatitude(), configurationManager.getFallbackLongitude());
 
         // We always prioritize location specified in the URL, even if the 'retrieveUserLocation'
         // option is set.
-        try {
-            targetLocation = new Location(fallbackLatitude, fallbackLongitude);
-
-            if (latitude.isPresent() && longitude.isPresent()) {
-                targetLocation = new Location(latitude.get(), longitude.get());
-            } else if (configurationManager.isRetrievingUserLocation()) {
-                targetLocation = GeoUtils.getLocationFromIPAddress(request.getRemoteAddr());
+        if (latitude.isPresent() && longitude.isPresent()) {
+            clientLocation = new Location(latitude.get(), longitude.get());
+        } else if (configurationManager.isRetrievingUserLocation()) {
+            try {
+                clientLocation = GeoUtils.getLocationFromIPAddress(request.getRemoteAddr());
+            } catch (Exception e) {
+                LOGGER.error("Could not use provided location, using fallback location instead");
             }
-        } catch (Exception e) {
-            LOGGER.error("Could not use provided location, using [lat: 0.0, long: 0.0] instead...");
         }
 
         // At the moment, we are taking the query string 'q' as is and only
@@ -81,7 +85,11 @@ public class SuggestionsController {
         // simpler logic.
 
         // All keys in the trie have been stored in lower case
-        return autocompleteManager.query(q.toLowerCase(), targetLocation);
+        return queryEngine.query(q.toLowerCase(), clientLocation);
     }
 
+    @ExceptionHandler
+    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value());
+    }
 }

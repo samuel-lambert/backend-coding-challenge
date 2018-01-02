@@ -18,22 +18,24 @@ import java.io.InputStream;
 import java.net.InetAddress;
 
 /**
- * This class contains various distance-related utilities
+ * This class contains distance-related utilities
  */
 public class GeoUtils {
 
-    private static final Double EARTH_RADIUS = 6371.0;
     private static final String GEO_IP_DB_PATH = "geolite2-city.mmdb";
+    private static final Double EARTH_RADIUS = 6371.0;
+
+    public static final Double MAXIMUM_DISTANCE = getMaximumDistance();
 
     private static DatabaseReader dbReader;
 
     /**
-     * Returns distance in kilometers between 2 points using
+     * Returns distance (in kilometers) between 2 points using
      * the Haversine formula.
      *
-     * @param l1 first location
-     * @param l2 second location
-     * @return longest possible distance on earth
+     * @param l1 source location
+     * @param l2 destination location
+     * @return distance between 2 given points
      */
     public static Double calculateDistance(Location l1, Location l2) {
         Double latDistance = Math.toRadians(l2.getLatitude() - l1.getLatitude());
@@ -46,17 +48,6 @@ public class GeoUtils {
         Double c = 2 * Math.asin(Math.sqrt(a));
 
         return EARTH_RADIUS * c;
-    }
-
-    /**
-     * Returns longest possible distance on earth
-     *
-     * @return longest possible distance on earth
-     */
-    public static Double getMaximumDistance() {
-        Location a = new Location(-90.0, -180.0);
-        Location b = new Location(90.0, 180.0);
-        return calculateDistance(a, b);
     }
 
     /**
@@ -77,6 +68,12 @@ public class GeoUtils {
 
         CityResponse response = dbReader.city(InetAddress.getByName(ipAddress));
         return new Location(response.getLocation().getLatitude(), response.getLocation().getLongitude());
+    }
+
+    private static Double getMaximumDistance() {
+        Location a = new Location(-90.0, -180.0);
+        Location b = new Location(90.0, 180.0);
+        return calculateDistance(a, b);
     }
 
 }

@@ -18,11 +18,11 @@ public class ConfigurationManager {
     private final Boolean retrieveUserLocation = false;
 
     // What would be the default latitude used to calculate scores if it was not included
-    // in the URL and 'retrieve_user_location' is not enabled?
+    // in the URL and 'retrieveUserLocation' is not enabled?
     private final Double fallbackLatitude = 45.5017;
 
     // What would be the default longitude used to calculate scores if it was not included
-    // in the URL and 'retrieve_user_location' is not enabled?
+    // in the URL and 'retrieveUserLocation' is not enabled?
     private final Double fallbackLongitude = -73.5673;
 
     public Boolean isRetrievingUserLocation() {

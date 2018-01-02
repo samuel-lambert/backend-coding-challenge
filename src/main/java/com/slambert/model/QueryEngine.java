@@ -26,7 +26,7 @@ import java.util.TreeSet;
  * data and obtain "scored" results according to client's location.
  */
 @Component
-public class AutocompleteManager {
+public class QueryEngine {
 
     private static final String CITIES_DATA_FILE = "cities_canada-usa.json";
 
@@ -37,7 +37,7 @@ public class AutocompleteManager {
      * Constructs the autocomplete trie with the data obtained in the
      * included JSON file.
      */
-    public AutocompleteManager() throws IOException {
+    public QueryEngine() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
@@ -62,7 +62,7 @@ public class AutocompleteManager {
 
     /**
      * Returns sorted city suggestions according to the query string. Scores are added to
-     * each city according to its distance and client location.
+     * each city according to its distance between itself and client location.
      *
      * @param q              query string sent by the client
      * @param clientLocation location of the client
@@ -88,7 +88,7 @@ public class AutocompleteManager {
         Double distance = GeoUtils.calculateDistance(clientLocation, cityLocation);
 
         // Following division normalizes distance so it is between interval [0, 1]
-        return 1.0 - (distance / GeoUtils.getMaximumDistance());
+        return 1.0 - (distance / GeoUtils.MAXIMUM_DISTANCE);
     }
 
 }

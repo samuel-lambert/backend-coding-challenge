@@ -20,12 +20,12 @@ public class Location {
      *                                  or longitude is not in the [-180.0, 180.0] range
      */
     public Location(Double latitude, Double longitude) {
-        if (latitude < -90.0 || latitude > 90.0 || longitude < -180.0 || longitude > 180.0) {
-            throw new IllegalArgumentException("Invalid location");
+        if (latitude >= -90.0 && latitude <= 90.0 && longitude >= -180.0 && longitude <= 180.0) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        } else {
+            throw new IllegalArgumentException("Invalid latitude and/or longitude");
         }
-
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 
     /**

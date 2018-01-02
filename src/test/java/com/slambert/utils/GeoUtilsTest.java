@@ -33,7 +33,7 @@ public class GeoUtilsTest {
         Location d = new Location(0.0, 0.0);
         Location e = new Location(90.0, 180.0);
         Double distance3 = GeoUtils.calculateDistance(d, e);
-        Double distance4 = GeoUtils.getMaximumDistance();
+        Double distance4 = GeoUtils.MAXIMUM_DISTANCE;
         assertTrue(distance3 < distance4);
     }
 
