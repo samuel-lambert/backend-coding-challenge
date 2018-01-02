@@ -62,3 +62,14 @@ $ mvn spring-boot:run
 ```
 
 Note: Maven needs to be install on your machine!
+
+## Design notes
+
+Initially, I wanted to calculate scores according to 3 aspects:
+* Distance between client and resulting cities of search query
+* Size (population) of the cities returned. For example, London, UK would always score better than London, ON.
+* Similarities between the search query string and a city name.
+
+However, I feel it is better to only use the distance between a client and a city to calculate a score on a result.
+It is much more probable that people living close to _London, ON_ do not want to have _London, UK_ as a first
+match when they are looking for _London_.

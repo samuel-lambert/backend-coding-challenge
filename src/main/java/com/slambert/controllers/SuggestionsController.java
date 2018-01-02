@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.Set;
 
 // TODO:
-// - fix transaction with latitude/longitude
 // - sponsored links
 // - test user location
 // - code review
