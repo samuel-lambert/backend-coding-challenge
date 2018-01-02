@@ -8,41 +8,33 @@
 
 package com.slambert;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties
-@PropertySource("file:application.properties")
 public class ConfigurationManager {
 
-    private Boolean retrieveUserLocation;
-    private Double fallbackLatitude;
-    private Double fallbackLongitude;
+    // Should the service try to use the IP address of the client to improve accuracy of
+    // the score if the latitude and/or longitude are not included in the URL?
+    private final Boolean retrieveUserLocation = false;
+
+    // What would be the default latitude used to calculate scores if it was not included
+    // in the URL and 'retrieve_user_location' is not enabled?
+    private final Double fallbackLatitude = 45.5017;
+
+    // What would be the default longitude used to calculate scores if it was not included
+    // in the URL and 'retrieve_user_location' is not enabled?
+    private final Double fallbackLongitude = -73.5673;
 
     public Boolean isRetrievingUserLocation() {
         return retrieveUserLocation;
-    }
-
-    public void setRetrieveUserLocation(Boolean retrieveUserLocation) {
-        this.retrieveUserLocation = retrieveUserLocation;
     }
 
     public Double getFallbackLatitude() {
         return fallbackLatitude;
     }
 
-    public void setFallbackLatitude(Double fallbackLatitude) {
-        this.fallbackLatitude = fallbackLatitude;
-    }
-
     public Double getFallbackLongitude() {
         return fallbackLongitude;
-    }
-
-    public void setFallbackLongitude(Double fallbackLongitude) {
-        this.fallbackLongitude = fallbackLongitude;
     }
 
 }

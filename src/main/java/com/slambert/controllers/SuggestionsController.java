@@ -28,7 +28,6 @@ import java.util.Set;
 
 // TODO:
 // - sponsored links
-// - test user location
 // - code review
 // - rank results by name as well...
 

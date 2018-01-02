@@ -13,8 +13,8 @@ import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
 import com.slambert.model.Location;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 
 /**
@@ -71,8 +71,8 @@ public class GeoUtils {
         // Lazy initialization of database reader
         if (dbReader == null) {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            File database = new File(classLoader.getResource(GEO_IP_DB_PATH).getFile());
-            dbReader = new DatabaseReader.Builder(database).build();
+            InputStream is = classLoader.getResourceAsStream(GEO_IP_DB_PATH);
+            dbReader = new DatabaseReader.Builder(is).build();
         }
 
         CityResponse response = dbReader.city(InetAddress.getByName(ipAddress));

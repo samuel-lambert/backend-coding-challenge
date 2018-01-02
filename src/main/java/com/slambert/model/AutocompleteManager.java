@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slambert.utils.GeoUtils;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -42,8 +42,8 @@ public class AutocompleteManager {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         try {
-            File file = new File(classLoader.getResource(CITIES_DATA_FILE).getFile());
-            cities = Arrays.asList(mapper.readValue(file, City[].class));
+            InputStream is = classLoader.getResourceAsStream(CITIES_DATA_FILE);
+            cities = Arrays.asList(mapper.readValue(is, City[].class));
             trie = new CityAutocompleteTrie();
 
             // Populating trie with city names as keys

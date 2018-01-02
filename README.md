@@ -21,26 +21,23 @@ Design an API endpoint that provides auto-complete suggestions for large cities.
 
 ## Configuration
 
-Various configuration options can be set in a configuration file, which can be found at the root folder as
-'application.properties'. These options are:
+Various configuration options can be set in ConfigurationManager.java. Hrm. A last minute classpath issue forced me to
+include these options in a source file rather than in a configuration file.
 
-#### retrieve_user_location
+#### retrieveUserLocation
 Should the service try to use the IP address of the client to improve accuracy of the score if the latitude and/or longitude
 are not included in the URL?
 Valid choices: true or false
 
-#### fallback_latitude
+#### fallbackLatitude
 What would be the default latitude used to calculate scores if it was not included in the URL and 'retrieve_user_location' is
 not enabled?
 Valid choices: Anything between -90.0 and 90.0 inclusively
 
-#### fallback_longitude
+#### fallbackLongitude
 What would be the default longitude used to calculate scores if it was not included in the URL and 'retrieve_user_location' is
 not enabled?
 Valid choices: Anything between -180.0 and 180.0 inclusively
-
-Note: this configuration file is managed by the Spring Framework, This means you can also override any Spring-related
-options in this file, such as server address or port number.
 
 ## Usage
 
