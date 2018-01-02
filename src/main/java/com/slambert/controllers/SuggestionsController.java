@@ -13,6 +13,8 @@ import com.slambert.model.AutocompleteManager;
 import com.slambert.model.CityResponse;
 import com.slambert.model.Location;
 import com.slambert.utils.GeoUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,11 +31,13 @@ import java.util.Set;
 // - sponsored links
 // - test user location
 // - code review
+// - rank results by name as well...
 
 @RestController
 public class SuggestionsController {
 
     private static final String SUGGESTIONS_PATH = "/suggestions";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SuggestionsController.class);
 
     @Autowired
     private AutocompleteManager autocompleteManager;
@@ -64,7 +68,7 @@ public class SuggestionsController {
                 targetLocation = GeoUtils.getLocationFromIPAddress(request.getRemoteAddr());
             }
         } catch (Exception e) {
-            // LOG could not retrieve, using 0.0, 0.0 instead...
+            LOGGER.error("Could not use provided location, using [lat: 0.0, long: 0.0] instead...");
         }
 
         // At the moment, we are taking the query string 'q' as is and only

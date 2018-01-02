@@ -38,12 +38,12 @@ public class GeoUtils {
     public static Double calculateDistance(Location l1, Location l2) {
         Double latDistance = Math.toRadians(l2.getLatitude() - l1.getLatitude());
         Double lonDistance = Math.toRadians(l2.getLongitude() - l1.getLongitude());
-        Double startLat = Math.toRadians(l1.getLongitude());
+        Double startLat = Math.toRadians(l1.getLatitude());
         Double endLat = Math.toRadians(l2.getLatitude());
 
-        Double a = Math.sin(latDistance / 2.0) * Math.sin(latDistance / 2.0) +
-                Math.cos(startLat) * Math.cos(endLat) * Math.sin(lonDistance / 2.0) * Math.sin(lonDistance / 2.0);
-        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+        Double a = Math.pow(Math.sin(latDistance / 2), 2) + Math.pow(Math.sin(lonDistance / 2), 2) *
+                Math.cos(startLat) * Math.cos(endLat);
+        Double c = 2 * Math.asin(Math.sqrt(a));
 
         return EARTH_RADIUS * c;
     }

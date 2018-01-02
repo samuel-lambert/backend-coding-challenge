@@ -24,17 +24,17 @@ Design an API endpoint that provides auto-complete suggestions for large cities.
 Various configuration options can be set in a configuration file, which can be found at the root folder as
 'application.properties'. These options are:
 
-####retrieve_user_location
+#### retrieve_user_location
 Should the service try to use the IP address of the client to improve accuracy of the score if the latitude and/or longitude
 are not included in the URL?
 Valid choices: true or false
 
-####fallback_latitude
+#### fallback_latitude
 What would be the default latitude used to calculate scores if it was not included in the URL and 'retrieve_user_location' is
 not enabled?
 Valid choices: Anything between -90.0 and 90.0 inclusively
 
-####fallback_longitude
+#### fallback_longitude
 What would be the default longitude used to calculate scores if it was not included in the URL and 'retrieve_user_location' is
 not enabled?
 Valid choices: Anything between -180.0 and 180.0 inclusively
