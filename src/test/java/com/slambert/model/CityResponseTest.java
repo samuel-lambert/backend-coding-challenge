@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 public class CityResponseTest {
 
     private City a = new City("a", "b", "c", 0.0, 0.0);
-    private City b = new City("a", "b", "c", 0.0, 0.0);
+    private City b = new City("b", "b", "c", 0.0, 0.0);
     private City c = new City("aa", "bb", "cc", 0.0, 0.0);
 
     @Test
@@ -52,7 +52,7 @@ public class CityResponseTest {
     public void testNameFormat() {
         CityResponse ar = new CityResponse(b, 0.0);
         CityResponse cr = new CityResponse(c, 0.0);
-        assertTrue(ar.getName().equals("A, B, C"));
+        assertTrue(ar.getName().equals("B, B, C"));
         assertTrue(cr.getName().equals("Aa, BB, CC"));
     }
 
