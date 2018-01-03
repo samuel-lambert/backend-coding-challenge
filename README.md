@@ -27,7 +27,6 @@ include these options in a source file rather than in a configuration file.
 #### retrieveUserLocation
 Should the service try to use the IP address of the client to improve accuracy of the score if the latitude and/or longitude
 are not included in the URL?
-Valid choices: true or false
 
 #### fallbackLatitude
 What would be the default latitude used to calculate scores if it was not included in the URL and 'retrieve_user_location' is
@@ -38,6 +37,28 @@ Valid choices: Anything between -90.0 and 90.0 inclusively
 What would be the default longitude used to calculate scores if it was not included in the URL and 'retrieve_user_location' is
 not enabled?
 Valid choices: Anything between -180.0 and 180.0 inclusively
+
+## Sponsored cities
+
+It is possible to preconfigure specific query strings to return specific cities on top of the list. These settings can be
+managed in sponsored_tokens.json, in the resources folder. For example, I could make Montreal appears first on the list
+anytime a client searches for _m_:
+
+```sh
+{
+  "m": {
+    "name": "montréal",
+    "state": "qc",
+    "country": "ca"
+  }
+}
+
+```
+
+## Alternate city names
+
+By design, this service maps provided alternate city names to the official one. For example, a search for _μοντρεαλ_
+would return _Montreal, QC, CA_, not the local greek name with the province name and the country name.
 
 ## Usage
 
