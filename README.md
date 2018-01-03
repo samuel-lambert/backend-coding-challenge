@@ -57,8 +57,10 @@ anytime a client searches for _m_:
 
 ## Alternate city names
 
-By design, this service maps provided alternate city names to the official one. For example, a search for _μοντρεαλ_
-would return _Montreal, QC, CA_, not the local greek name with the province name and the country name.
+This feature maps provided alternate city names to the official one. For example, a search for _μοντρεαλ_ would
+return _Montreal, QC, CA_, not the local greek name with the province name and the country name. However, this
+feature can cause some weird results because many alternate city names are short, unrelated tokens. The search query
+_xim_ would return _Saint-Hyacinthe, QC, CA_ first...
 
 ## Usage
 
