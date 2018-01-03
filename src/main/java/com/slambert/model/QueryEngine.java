@@ -8,6 +8,7 @@
 
 package com.slambert.model;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.slambert.utils.GeoUtils;
 import org.springframework.stereotype.Component;
@@ -29,9 +30,11 @@ import java.util.TreeSet;
 public class QueryEngine {
 
     private static final String CITIES_DATA_FILE = "cities_canada-usa.json";
+    private static final String SPONSORED_TOKENS_FILE = "sponsored_tokens.json";
 
-    private CityAutocompleteTrie trie;
+    private CityTrie trie;
     private List<City> cities;
+    private Map<String, City> sponsoredCities;
 
     /**
      * Constructs the autocomplete trie with the data obtained in the
@@ -44,7 +47,7 @@ public class QueryEngine {
         try {
             InputStream is = classLoader.getResourceAsStream(CITIES_DATA_FILE);
             cities = Arrays.asList(mapper.readValue(is, City[].class));
-            trie = new CityAutocompleteTrie();
+            trie = new CityTrie();
 
             // Populating trie with city names as keys
             for (City c : cities) {
@@ -55,6 +58,10 @@ public class QueryEngine {
                     trie.add(s, c);
                 }
             }
+
+            // Also loading sponsored city data
+            is = classLoader.getResourceAsStream(SPONSORED_TOKENS_FILE);
+            sponsoredCities = mapper.readValue(is, new TypeReference<Map<String, City>>() {});
         } catch (Exception e) {
             throw new IOException("Unexpected error: could not parse JSON city data");
         }
@@ -62,7 +69,8 @@ public class QueryEngine {
 
     /**
      * Returns sorted city suggestions according to the query string. Scores are added to
-     * each city according to its distance between itself and client location.
+     * each city according to its distance between itself and client location. Scores can
+     * also be set to 1.0 (maximum score possible) if the city is found to be "sponsored".
      *
      * @param q              query string sent by the client
      * @param clientLocation location of the client
@@ -75,6 +83,16 @@ public class QueryEngine {
         Set<CityResponse> cityResponses = new TreeSet<>();
         Set<City> suggestedCities = trie.get(q);
 
+        // If query parameter matches exactly a sponsored city token, we add and prioritize that city
+        City mock = sponsoredCities.get(q);
+        if (mock != null) {
+            City sponsoredCity = trie.get(mock.getName(), mock.getState(), mock.getCountry());
+            if (sponsoredCity != null) {
+                cityResponses.add(new CityResponse(sponsoredCity, 1.0));
+            }
+        }
+
+        // Adding regular suggestions
         for (City c : suggestedCities) {
             cityResponses.add(new CityResponse(c, rankByDistance(c, clientLocation)));
         }

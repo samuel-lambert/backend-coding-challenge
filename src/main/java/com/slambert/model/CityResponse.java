@@ -75,6 +75,10 @@ public class CityResponse implements Comparable<CityResponse> {
 
     @Override
     public int compareTo(CityResponse rhs) {
+        if (name.equals(rhs.name)) {
+            return 0;
+        }
+
         // Reverting lhs/rhs because these objects
         // need to be sorted in reverse order.
         if (score == rhs.score) {
